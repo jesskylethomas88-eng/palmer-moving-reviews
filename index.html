@@ -427,26 +427,52 @@
       e.preventDefault();
       if (rating === 0) return;
 
-      const data = {
-        customerName: document.getElementById("customerName").value.trim(),
-        rating: rating,
-        crewMember: document.getElementById("crewMember").value.trim() || undefined,
-        moveDate: document.getElementById("moveDate").value || undefined,
-        moveType: document.getElementById("moveType").value || undefined,
-        comments: document.getElementById("comments").value.trim() || undefined,
-        submittedAt: new Date().toISOString()
-      };
+      var btn = document.getElementById("submit-btn");
+      btn.disabled = true;
+      btn.textContent = "Submitting...";
 
-      // Review data captured — route to appropriate page
+      var starText = rating + " out of 5 stars";
+      var ratingLabel = LABELS[rating];
+      var customerName = document.getElementById("customerName").value.trim();
+      var crewMember = document.getElementById("crewMember").value.trim();
+      var moveDate = document.getElementById("moveDate").value;
+      var moveType = document.getElementById("moveType").value;
+      var comments = document.getElementById("comments").value.trim();
 
-      // Route based on rating
-      if (rating >= 4) {
-        showPage("redirect-page");
-        document.getElementById("header-subtitle").textContent = "Thank you for your feedback";
-        startCountdown();
-      } else {
-        showPage("thankyou-page");
-        document.getElementById("header-subtitle").textContent = "Your feedback matters";
+      // Send review to email via FormSubmit
+      var formData = new FormData();
+      formData.append("_subject", "New Palmer Moving Review: " + starText + " — " + ratingLabel);
+      formData.append("Customer Name", customerName);
+      formData.append("Rating", starText + " (" + ratingLabel + ")");
+      formData.append("Type of Move", moveType || "Not specified");
+      formData.append("Crew / Driver", crewMember || "Not specified");
+      formData.append("Move Date", moveDate || "Not specified");
+      formData.append("Comments", comments || "No comments");
+      formData.append("Submitted At", new Date().toLocaleString());
+      formData.append("_template", "table");
+      formData.append("_captcha", "false");
+
+      fetch("https://formsubmit.co/ajax/kthomas@palmermoving.com", {
+        method: "POST",
+        body: formData
+      }).then(function(res) {
+        return res.json();
+      }).then(function() {
+        routeAfterSubmit();
+      }).catch(function() {
+        // Still route even if email fails — don't block the user
+        routeAfterSubmit();
+      });
+
+      function routeAfterSubmit() {
+        if (rating >= 4) {
+          showPage("redirect-page");
+          document.getElementById("header-subtitle").textContent = "Thank you for your feedback";
+          startCountdown();
+        } else {
+          showPage("thankyou-page");
+          document.getElementById("header-subtitle").textContent = "Your feedback matters";
+        }
       }
     });
 
