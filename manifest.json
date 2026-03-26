@@ -2,19 +2,19 @@
   "name": "Palmer Moving Services — Reviews",
   "short_name": "Palmer Reviews",
   "description": "Customer review app for Palmer Moving Services",
-  "start_url": "/",
+  "start_url": "/palmer-moving-reviews/",
   "display": "standalone",
   "background_color": "#f0f2f7",
   "theme_color": "#1a3a6b",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "/palmer-moving-reviews/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/icon-512.png",
+      "src": "/palmer-moving-reviews/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
